@@ -1,6 +1,9 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"night-service-backend/domain/endpoints"
+)
 
 //reference for this design
 //https://github.com/gustavoopedrosa/go-gin-sqlite/blob/main/router/
@@ -8,9 +11,10 @@ import "github.com/gin-gonic/gin"
 
 // initializeRoutes initialize the routes of the API.
 func initializeRoutes(router *gin.Engine) {
+	policyEndpoint := endpoints.NewPolicyEndpoint()
 	v1 := router.Group("/api/v1")
 	{
-		v1.GET("policy", handler.ShowOpeningHandler)
+		v1.GET("policy", policyEndpoint.GetPolicy())
 		//v1.POST(openingRoute, handler.CreateOpeningHandler)
 		//v1.DELETE(openingRoute, handler.DeleteOpeningHandler)
 		//v1.PUT(openingRoute, handler.UpdateOpeningHandler)

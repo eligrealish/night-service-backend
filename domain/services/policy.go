@@ -12,6 +12,6 @@ func NewPolicyService() *PolicyService {
 	return instance
 }
 
-func GetPolicy() {
+func (s PolicyService) GetPolicy() {
 	fmt.Println("logging Policy Instance")
 }
