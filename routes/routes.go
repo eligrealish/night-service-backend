@@ -10,7 +10,7 @@ import "github.com/gin-gonic/gin"
 func initializeRoutes(router *gin.Engine) {
 	v1 := router.Group("/api/v1")
 	{
-		v1.GET(openingRoute, handler.ShowOpeningHandler)
+		v1.GET("policy", handler.ShowOpeningHandler)
 		//v1.POST(openingRoute, handler.CreateOpeningHandler)
 		//v1.DELETE(openingRoute, handler.DeleteOpeningHandler)
 		//v1.PUT(openingRoute, handler.UpdateOpeningHandler)
