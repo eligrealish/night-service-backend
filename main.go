@@ -1,14 +1,13 @@
 package main
 
 import (
-	"backend/model"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
+	"night-service-backend/domain/models"
 	"time"
 )
 
@@ -28,44 +27,22 @@ func main() {
 	filter := bson.D{}
 
 	// Create a variable in which to store the result
-	var result bson.M
+	//var result bson.M
 
+	var message models.Message
 	// Find the document
-	err = collection.FindOne(context.Background(), filter).Decode(&result)
+	err = collection.FindOne(context.Background(), filter).Decode(&message)
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	bsonBytes, _ := bson.Marshal(result)
-
-	// Print the result
-	fmt.Printf("Found document: %T (%s)", result, result)
-
-	var messageModel *model.Message
-
-	// Convert the BSON document to a Message struct
-	err = bson.Unmarshal(bsonBytes, &messageModel)
-	if err != nil {
-		fmt.Println("Error unmarshaling BSON:", err)
-		return
-	}
+	fmt.Printf("thing is %s", message)
 
 	if err = client.Disconnect(ctx); err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("mapped Struct: %T (%s)", messageModel, messageModel)
-
-	// TODO https://chat.openai.com/c/296f6a11-de68-462f-97b5-190d8661831b wtf is this
-	// cross reference with these
-	// TODO https://www.mongodb.com/docs/drivers/go/current/fundamentals/bson/
-	// TODO https://www.mongodb.com/docs/drivers/go/current/fundamentals/crud/read-operations/query-document/
 	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+		c.JSON(200, message)
 	})
 
 	router.Run(":8080")
+
 }
