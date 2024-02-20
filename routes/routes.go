@@ -4,17 +4,17 @@ import "github.com/gin-gonic/gin"
 
 //reference for this design
 //https://github.com/gustavoopedrosa/go-gin-sqlite/blob/main/router/
-//https://github.com/eddycjy/go-gin-example/tree/master/routers/api
+//https://github.com/eddycjy/go-gin-example	/tree/master/routers/api
 
 // initializeRoutes initialize the routes of the API.
 func initializeRoutes(router *gin.Engine) {
 	v1 := router.Group("/api/v1")
 	{
 		v1.GET(openingRoute, handler.ShowOpeningHandler)
-		v1.POST(openingRoute, handler.CreateOpeningHandler)
-		v1.DELETE(openingRoute, handler.DeleteOpeningHandler)
-		v1.PUT(openingRoute, handler.UpdateOpeningHandler)
-		v1.GET("/openings", handler.ListOpeningsHandler)
+		//v1.POST(openingRoute, handler.CreateOpeningHandler)
+		//v1.DELETE(openingRoute, handler.DeleteOpeningHandler)
+		//v1.PUT(openingRoute, handler.UpdateOpeningHandler)
+		//v1.GET("/openings", handler.ListOpeningsHandler)
 	}
 }
 
