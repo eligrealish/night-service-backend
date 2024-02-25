@@ -14,7 +14,7 @@ func initializeRoutes(router *gin.Engine) {
 	policyEndpoint := endpoints.NewPolicyEndpoint()
 	v1 := router.Group("/api/v1")
 	{
-		v1.GET("policy", policyEndpoint.GetPolicy())
+		v1.GET("policy", policyEndpoint.GetPolicy)
 		//v1.POST(openingRoute, handler.CreateOpeningHandler)
 		//v1.DELETE(openingRoute, handler.DeleteOpeningHandler)
 		//v1.PUT(openingRoute, handler.UpdateOpeningHandler)

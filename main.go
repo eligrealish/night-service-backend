@@ -10,13 +10,15 @@ import (
 // TODO note down how to pull in dependencies "go get {$project_name} ."
 
 func main() {
-	//TODO cross refernce error with pointer question
+	//TODO cross reference  error with pointer question
 
+	//TODO review other debug methods then just log breakpoints
 	// info log, can this be added into Gin?
-	log.Println("")
+	log.Println("before router init")
 
 	// Initialize Router
 	routes.Initialize()
+	log.Println("after router init")
 
 }
 

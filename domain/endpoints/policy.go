@@ -2,6 +2,7 @@ package endpoints
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"night-service-backend/domain/services"
 )
 
@@ -22,7 +23,8 @@ func NewPolicyEndpoint() *PolicyEndpoint {
 	return policyEndpoint
 }
 
-func (e PolicyEndpoint) GetPolicy() gin.HandlerFunc {
+// the gin context is passed implictly when the router is registered
+func (e PolicyEndpoint) GetPolicy(ctx *gin.Context) {
 	policyService.GetPolicy()
-	return nil
+	ctx.JSON(http.StatusOK, "{'error':0}")
 }
