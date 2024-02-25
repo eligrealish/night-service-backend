@@ -10,7 +10,7 @@ import (
 // TODO note down how to pull in dependencies "go get {$project_name} ."
 
 func main() {
-	// TODO next "how to add mongo data to git repo" https://www.google.com/search?q=how+to+add+mongo+data+to+git+repo
+	// TODO next Mongo backing up -> https://chat.openai.com/c/70c1bbc2-62d3-435a-84b4-25d89e2aaed2
 
 	//TODO cross reference  error with pointer question
 
