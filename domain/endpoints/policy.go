@@ -25,6 +25,5 @@ func NewPolicyEndpoint() *PolicyEndpoint {
 
 // the gin context is passed implictly when the router is registered
 func (e PolicyEndpoint) GetPolicy(ctx *gin.Context) {
-	policyService.GetPolicy()
-	ctx.JSON(http.StatusOK, "{'error':0}")
+	ctx.JSON(http.StatusOK, policyService.GetPolicy())
 }

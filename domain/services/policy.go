@@ -1,6 +1,15 @@
 package services
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
+	"night-service-backend/domain/models"
+	"time"
+)
 
 //TODO hardcode and don't use model for testing
 
@@ -12,6 +21,23 @@ func NewPolicyService() *PolicyService {
 	return instance
 }
 
-func (s PolicyService) GetPolicy() {
-	fmt.Println("logging Policy Instance")
+func (s PolicyService) GetPolicy() models.Message {
+	log.Println("logging Policy Instance")
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	collection := client.Database("privacy_notice").Collection("message")
+	filter := bson.D{}
+
+	// Create a variable in which to store the result
+	//var result bson.M
+
+	var message models.Message
+	// Find the document
+	err = collection.FindOne(context.Background(), filter).Decode(&message)
+	fmt.Printf("thing is %s", message)
+
+	if err = client.Disconnect(ctx); err != nil {
+		panic(err)
+	}
+	return message
 }
