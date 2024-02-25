@@ -1,6 +1,9 @@
 package main
 
-import "night-service-backend/routes"
+import (
+	"log"
+	"night-service-backend/routes"
+)
 
 // TODO start a github notes, authenticate with an SSH key
 // TODO make a TODO.go? to list things you haven't got a markdown repo yet
@@ -8,6 +11,9 @@ import "night-service-backend/routes"
 
 func main() {
 	//TODO cross refernce error with pointer question
+
+	// info log, can this be added into Gin?
+	log.Println("")
 
 	// Initialize Router
 	routes.Initialize()
