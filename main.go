@@ -10,6 +10,8 @@ import (
 // TODO note down how to pull in dependencies "go get {$project_name} ."
 
 func main() {
+	// TODO next "how to add mongo data to git repo" https://www.google.com/search?q=how+to+add+mongo+data+to+git+repo
+
 	//TODO cross reference  error with pointer question
 
 	//TODO review other debug methods then just log breakpoints
