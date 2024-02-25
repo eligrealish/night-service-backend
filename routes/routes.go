@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"night-service-backend/domain/endpoints"
+	"night-service-backend/domains/policy"
 )
 
 //reference for this design
@@ -11,7 +11,7 @@ import (
 
 // initializeRoutes initialize the routes of the API.
 func initializeRoutes(router *gin.Engine) {
-	policyEndpoint := endpoints.NewPolicyEndpoint()
+	policyEndpoint := policy.NewPolicyEndpoint()
 	v1 := router.Group("/api/v1")
 	{
 		v1.GET("policy", policyEndpoint.GetPolicy)

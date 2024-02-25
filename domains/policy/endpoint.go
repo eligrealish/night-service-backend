@@ -1,24 +1,23 @@
-package endpoints
+package policy
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"night-service-backend/domain/services"
 )
 
 // TODO reviewing threading of local scope vs global e.g should i use VAR
 var (
-	policyService services.PolicyService
+	policyService PolicyService
 )
 
 type PolicyEndpoint struct {
-	PolicyService services.PolicyService
+	PolicyService PolicyService
 }
 
 // TODO review use of pointers here
 // TODO is this a constructor?
 func NewPolicyEndpoint() *PolicyEndpoint {
-	policyService = *services.NewPolicyService()
+	policyService = *NewPolicyService()
 	policyEndpoint := &PolicyEndpoint{policyService}
 	return policyEndpoint
 }

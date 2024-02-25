@@ -4,11 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"night-service-backend/domain/services"
+	"night-service-backend/domains/policy"
 )
 
 var (
-	policyService services.PolicyService
+	policyService policy.PolicyService
 )
 
 type Middleware struct {
@@ -27,7 +27,7 @@ func (m Middleware) CheckPolicyAccepted() gin.HandlerFunc {
 
 		// Check if the header is set to "true"
 		if headerValue != "true" {
-			policyService = *services.NewPolicyService()
+			policyService = *policy.NewPolicyService()
 			// If not, call policyEndpoint.GetPolicy and respond with the result
 			c.JSON(http.StatusOK, policyService.GetPolicy())
 			return

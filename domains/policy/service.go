@@ -1,4 +1,4 @@
-package services
+package policy
 
 import (
 	"context"
@@ -7,7 +7,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
-	"night-service-backend/domain/models"
 	"time"
 )
 
@@ -21,7 +20,7 @@ func NewPolicyService() *PolicyService {
 	return instance
 }
 
-func (s PolicyService) GetPolicy() models.Message {
+func (s PolicyService) GetPolicy() Message {
 	log.Println("logging Policy Instance")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
@@ -31,7 +30,7 @@ func (s PolicyService) GetPolicy() models.Message {
 	// Create a variable in which to store the result
 	//var result bson.M
 
-	var message models.Message
+	var message Message
 	// Find the document
 	err = collection.FindOne(context.Background(), filter).Decode(&message)
 	fmt.Printf("thing is %s", message)

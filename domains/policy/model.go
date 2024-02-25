@@ -1,4 +1,4 @@
-package models
+package policy
 
 type Message struct {
 	PrivacyNotice struct {
