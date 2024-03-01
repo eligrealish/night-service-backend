@@ -30,6 +30,10 @@ func (m Middleware) CheckPolicyAccepted() gin.HandlerFunc {
 			policyService = *policy.NewPolicyService()
 			// If not, call policyEndpoint.GetPolicy and respond with the result
 			c.JSON(http.StatusOK, policyService.GetPolicy())
+			
+			// required to stop request going to other route
+			c.Abort()
+			
 			return
 		}
 
