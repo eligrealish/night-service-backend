@@ -24,7 +24,7 @@ func (s PolicyService) GetPolicy() Message {
 	log.Println("logging Policy Instance")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
-	collection := client.Database("privacy_notice").Collection("message")
+	collection := client.Database("Night_Service").Collection("Privacy_Notice")
 	filter := bson.D{}
 
 	// Create a variable in which to store the result
