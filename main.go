@@ -10,6 +10,11 @@ import (
 // TODO note down how to pull in dependencies "go get {$project_name} ."
 
 func main() {
+	//GET $DOMAIN/policy
+	//GET $DOMAIN/event/$id
+	//GET $DOMAIN/feed?location=$location
+	//GET $DOMAIN/feed?location=$location&startDate=$startDate&endDate=$endDate
+
 	// TODO middleware broken, likely due to pointers in router package
 
 	// TODO next Mongo backing up -> https://chat.openai.com/c/70c1bbc2-62d3-435a-84b4-25d89e2aaed2
