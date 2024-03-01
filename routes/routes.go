@@ -12,9 +12,11 @@ import (
 // initializeRoutes initialize the routes of the API.
 func initializeRoutes(router *gin.Engine) {
 	policyEndpoint := policy.NewPolicyEndpoint()
-	v1 := router.Group("/api/v1")
+	v1 := router.Group("/")
 	{
 		v1.GET("policy", policyEndpoint.GetPolicy)
+		v1.GET("feed", policyEndpoint.GetTest)
+		v1.GET("event", policyEndpoint.GetTest)
 		v1.GET("test", policyEndpoint.GetTest)
 		//v1.POST(openingRoute, handler.CreateOpeningHandler)
 		//v1.DELETE(openingRoute, handler.DeleteOpeningHandler)
