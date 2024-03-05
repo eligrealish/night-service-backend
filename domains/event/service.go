@@ -1,5 +1,7 @@
 package event
 
+import "log"
+
 type EventService struct {
 }
 
@@ -8,6 +10,8 @@ func NewEventService() *EventService {
 	return instance
 }
 
-func GetEventByID() {
+func (e EventService) GetEventHandler() Event {
+	log.Println("Event Handler")
 
+	return Event{}
 }

@@ -8,7 +8,7 @@ import (
 // Initializes and run the router.
 func Initialize() {
 	log.Println("init func")
-	//TODO add to gin New later
+
 	router := gin.Default()
 
 	middleware := Middleware{}
