@@ -10,8 +10,6 @@ import (
 	"time"
 )
 
-//TODO hardcode and don't use model for testing
-
 type PolicyService struct {
 }
 
