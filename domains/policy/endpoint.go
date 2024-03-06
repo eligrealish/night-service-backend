@@ -10,7 +10,7 @@ var (
 )
 
 type PolicyEndpoint struct {
-	PolicyService PolicyService
+	policyService PolicyService
 }
 
 func NewPolicyEndpoint() *PolicyEndpoint {
@@ -22,8 +22,4 @@ func NewPolicyEndpoint() *PolicyEndpoint {
 // the gin context is passed implictly when the router is registered
 func (e PolicyEndpoint) GetPolicy(context *gin.Context) {
 	context.JSON(http.StatusOK, policyService.GetPolicyHandler())
-}
-
-func (e PolicyEndpoint) GetTest(context *gin.Context) {
-	context.JSON(http.StatusOK, "\"{status\":\"test\"}")
 }

@@ -1,7 +1,7 @@
 package feed
 
 import (
-	"night-service-backend/domains/event" // assuming 'night-service-backend' is the module name
+	"night-service-backend/domains/event"
 )
 
 type Feed struct {

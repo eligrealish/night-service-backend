@@ -10,7 +10,7 @@ var (
 )
 
 type EventEndpoint struct {
-	EventService EventService
+	eventService EventService
 }
 
 func NewEventEndpoint() *EventEndpoint {
@@ -19,7 +19,6 @@ func NewEventEndpoint() *EventEndpoint {
 	return eventEndpoint
 }
 
-// the gin context is passed implictly when the router is registered
 func (e EventEndpoint) GetEvent(context *gin.Context) {
-	context.JSON(http.StatusOK, eventService.GetEventHandler(context))
+	context.JSON(http.StatusOK, Event{})
 }

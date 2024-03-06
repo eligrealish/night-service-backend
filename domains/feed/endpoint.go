@@ -10,7 +10,7 @@ var (
 )
 
 type FeedEndpoint struct {
-	FeedService FeedService
+	feedService FeedService
 }
 
 func NewFeedEndpoint() *FeedEndpoint {
@@ -19,6 +19,7 @@ func NewFeedEndpoint() *FeedEndpoint {
 	return feedEndpoint
 }
 
-func (f FolicyEndpoint) GetPolicy(context *gin.Context) {
-	context.JSON(http.StatusOK, feedService.GetFeedByLocation())
+// the gin context is passed implictly when the router is registered
+func (f FeedEndpoint) GetFeed(context *gin.Context) {
+	context.JSON(http.StatusOK, feedService.GetFeedHandler(context))
 }

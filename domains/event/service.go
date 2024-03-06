@@ -1,28 +1,19 @@
 package event
 
-import (
-	"github.com/gin-gonic/gin"
-	"log"
-	"night-service-backend/utils"
-)
-
-var (
-	utils Utils
-)
-
+import "log"
 
 type EventService struct {
 }
 
 func NewEventService() *EventService {
-	eventService := &EventService{}
-	utils := *NewUtils()
-	return eventService
+	instance := &EventService{}
+	return instance
+}
+func (e EventService) GetEventHandler() Event {
+	log.Println("event log")
+	return e.GetEvent()
 }
 
-func (e EventService) GetEventHandler(context *gin.Context) Event {
-	log.Println("Event Handler")
-	// Parse query string parameters
-	if utils.checkRequestKeyPresent(context,"startDate") && utils.checkRequestKeyPresent(context,"endDate")
+func (e EventService) GetEvent() Event {
 	return Event{}
 }

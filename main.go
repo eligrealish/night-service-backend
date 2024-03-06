@@ -7,9 +7,9 @@ import (
 
 func main() {
 	//GET $DOMAIN/policy
-	//GET $DOMAIN/event/$id
-	//GET $DOMAIN/feed?location=$location
-	//GET $DOMAIN/feed?location=$location&startDate=$startDate&endDate=$endDate
+	//GET $DOMAIN/feed/$id
+	//GET $DOMAIN/event?location=$location
+	//GET $DOMAIN/event?location=$location&startDate=$startDate&endDate=$endDate
 
 	log.Println("before router init")
 
