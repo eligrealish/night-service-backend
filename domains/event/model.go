@@ -1,9 +1,11 @@
 package event
 
-import (
-	"time"
-)
+import "time"
 
+type List struct {
+	Location string  `json:"location" bson:"location"`
+	Events   []Event `json:"events" bson:"events"`
+}
 type Event struct {
 	EventName   string    `json:"eventName" bson:"eventName"`
 	Venue       string    `json:"venue" bson:"venue"`
