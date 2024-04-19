@@ -23,7 +23,7 @@ func NewEventService() *EventService {
 	return eventService
 }
 
-func (e EventService) GetEventParams(context *gin.Context) Event {
+func (e EventService) GetEventParams(context *gin.Context) List {
 	log.Println("Event Handler")
 	location, err := context.GetQuery("location")
 	if err {
@@ -36,11 +36,11 @@ func (e EventService) GetEventParams(context *gin.Context) Event {
 		endDate, _ := context.GetQuery("endDate")
 		GetEventByLocationAndDate(startDate, endDate, location)
 		log.Println("dates passed")
-		return Event{}
+		return List{}
 	}
 	log.Println("dates not passed")
 	GetEventByLocation(location)
-	return Event{}
+	return List{}
 }
 
 func GetEventByLocation(location string) {
@@ -54,7 +54,8 @@ func GetEventByLocationAndDate(startDate string, endDate string, location string
 
 }
 
-func GetEventByID(context *gin.Context) {
+func (e EventService) GetEventByID(context *gin.Context) Event {
 	id := context.Param("id")
 	log.Println(id)
+	return Event{}
 }
