@@ -40,7 +40,7 @@ func (e EventService) GetEventParams(context *gin.Context) List {
 }
 
 // numbered in terms of dificuitly
-
+// review impl here https://chat.openai.com/c/b06a5b18-13f7-4eb8-b017-b9266db04ac3
 // todo retrives from mongo when the date is today 1
 func GetEventByLocation(location string) {
 	//	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
