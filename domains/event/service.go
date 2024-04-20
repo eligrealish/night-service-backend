@@ -1,13 +1,9 @@
 package event
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"night-service-backend/utils"
-	"time"
 )
 
 var (
@@ -43,19 +39,25 @@ func (e EventService) GetEventParams(context *gin.Context) List {
 	return List{}
 }
 
+// numbered in terms of dificuitly
+
+// todo retrives from mongo when the date is today 1
 func GetEventByLocation(location string) {
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
-	collection := client.Database("Night_Service").Collection("Event")
-	log.Println(collection)
+	//	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	//client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	//	collection := client.Database("Night_Service").Collection("Event")
+
 }
 
+// todo reterives from mongo via specific dates and location 2
 func GetEventByLocationAndDate(startDate string, endDate string, location string) {
 
 }
 
+// todo reterives from mongo via ID 3
 func (e EventService) GetEventByID(context *gin.Context) Event {
 	id := context.Param("id")
 	log.Println(id)
 	return Event{}
+
 }
