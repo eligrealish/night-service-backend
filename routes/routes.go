@@ -16,5 +16,7 @@ func initializeRoutes(router *gin.Engine) {
 		// todo review having two structs causes cocurrency issues
 		endpoint.GET("event", eventEndpoint.GetEventWithParams)
 		endpoint.GET("event/:id", eventEndpoint.GetEventByID)
+
+		endpoint.GET("eventByIDTest", eventEndpoint.GetEventByID)
 	}
 }
