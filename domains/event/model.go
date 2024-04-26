@@ -15,4 +15,5 @@ type Event struct {
 	EndDate     time.Time `json:"endDate" bson:"endDate"`
 	Images      []string  `json:"images" bson:"images"`
 	Description string    `json:"description" bson:"description"`
+	DateOf      string    `json:"dateOf" bson:"dateOf"`
 }

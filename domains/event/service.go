@@ -2,6 +2,7 @@ package event
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -55,46 +56,37 @@ func GetEventByLocation(location string) {
 	// Get the current time
 	now := time.Now()
 
-	// Determine if current time is before or after today's noon
-	todayNoon := time.Date(now.Year(), now.Month(), now.Day(), 12, 0, 0, 0, now.Location())
-	var middayBefore, middayAfter time.Time
+	// Define the 9 AM time for the current day
+	nineAm := time.Date(now.Year(), now.Month(), now.Day(), 9, 0, 0, 0, now.Location())
 
-	if now.Before(todayNoon) {
-		// If it's before noon, midday before is yesterday's noon
-		middayBefore = todayNoon.AddDate(0, 0, -1)
-		middayAfter = todayNoon
+	var resultDate time.Time
+	if now.Before(nineAm) {
+		// If the current time is before 9 AM, set the result to the previous day
+		resultDate = now.AddDate(0, 0, -1)
 	} else {
-		// If it's after noon, midday before is today's noon
-		middayBefore = todayNoon
-		middayAfter = todayNoon.AddDate(0, 0, 1)
+		// If it is after 9 AM, set the result to the current day
+		resultDate = now
 	}
 
-	// todo refactor to include last entry and to select 5 mins before that
-	// Creating a filter to fetch events based on location and current date range
-	filter := bson.M{
-		"location": location,
-		"endDate": bson.M{
-			"$gte": middayBefore, // Event end date is greater than or equal to the last midday
-			"$lt":  middayAfter,  // Event end date is less than the next midday
-		},
-	}
-
+	filter := bson.D{{"dateOf", bson.D{{"eq", resultDate}}}}
 	cursor, err := collection.Find(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer cursor.Close(context.TODO())
 
+	// Iterate through the cursor
 	var events []Event
-	if err = cursor.All(context.TODO(), &events); err != nil {
-		log.Fatal(err)
+	for cursor.Next(context.TODO()) {
+		var event Event
+		if err := cursor.Decode(event); err != nil {
+			log.Fatal(err)
+		}
+		events = append(events, event)
 	}
-
-	eventsDomain := List{
-		Events: events,
-	}
-
-	// Here you can use eventsDomain as needed, e.g., print details, handle them in your application, etc.
-	log.Println(eventsDomain)
+	log.Println(events)
+	// Print the result
+	fmt.Println("Resulting Date:", resultDate.Format("2006-01-02"))
 }
 
 // todo reterives from mongo via specific dates and location 2
