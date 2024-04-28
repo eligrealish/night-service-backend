@@ -2,6 +2,7 @@ package event
 
 import (
 	"context"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -27,15 +28,14 @@ func NewEventService() *EventService {
 	return eventService
 }
 
-func (e EventService) GetEventParams(context *gin.Context) List {
+func (e EventService) GetEventParams(context *gin.Context) (List, error) {
 	log.Println("Event Handler")
 	countryCode, err := context.GetQuery("countryCode")
 	countryCode = strings.ToUpper(countryCode)
 	city, err := context.GetQuery("city")
 	city = charUtils.UppercaseFirst(city)
-	if err {
-		log.Println(err)
-		// should write 500 here
+	if !err {
+		return List{}, errors.New("missing parameters")
 	}
 	// Parse query string parameters
 	if requestUtils.CheckRequestKeyPresent(context, "startDate") && requestUtils.CheckRequestKeyPresent(context, "endDate") {
@@ -49,7 +49,7 @@ func (e EventService) GetEventParams(context *gin.Context) List {
 	return GetEventByLocation(countryCode, city)
 }
 
-func GetEventByLocation(countryCode string, city string) List {
+func GetEventByLocation(countryCode string, city string) (List, error) {
 	// Get the current time
 	now := time.Now()
 
@@ -70,13 +70,16 @@ func GetEventByLocation(countryCode string, city string) List {
 		{"city", city},
 	}
 
-	list := GetEventByDBQuery(filter, countryCode, city)
+	list, err := GetEventByDBQuery(filter, countryCode, city)
+	if err != nil {
+		return List{}, err
+	}
 	list.DateOf = resultDate.Format("2006-01-02")
 
-	return list
+	return list, nil
 }
 
-func GetEventByLocationAndDate(startDate string, endDate string, countryCode string, city string) List {
+func GetEventByLocationAndDate(startDate string, endDate string, countryCode string, city string) (List, error) {
 	filter := bson.D{
 		{"dateOf", bson.D{
 			{"$gte", startDate},
@@ -88,7 +91,7 @@ func GetEventByLocationAndDate(startDate string, endDate string, countryCode str
 	return GetEventByDBQuery(filter, countryCode, city)
 }
 
-func GetEventByDBQuery(filter bson.D, countryCode string, city string) List {
+func GetEventByDBQuery(filter bson.D, countryCode string, city string) (List, error) {
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
@@ -96,19 +99,21 @@ func GetEventByDBQuery(filter bson.D, countryCode string, city string) List {
 
 	log.Printf("filter : %s", filter)
 	cursor, err := collection.Find(context.Background(), filter)
-	if err != nil {
-		log.Fatal(err)
+	if err != nil || !cursor.Next(context.TODO()) {
+		log.Println("no database response")
+		return List{}, errors.New("no database response")
 	}
+
 	var eventsPtr []*Event
 	for cursor.Next(context.Background()) {
 		var event Event
 		err := cursor.Decode(&event)
 		if err != nil {
-			log.Println(err)
+			return List{}, err
 
 		}
 		eventsPtr = append(eventsPtr, &event)
-		log.Println(event)
+		log.Println("event : %s", event)
 	}
 	log.Println(eventsPtr)
 	var list List
@@ -124,7 +129,7 @@ func GetEventByDBQuery(filter bson.D, countryCode string, city string) List {
 	list.City = city
 
 	log.Println(list)
-	return list
+	return list, nil
 }
 
 // todo reterives from mongo via ID 3
