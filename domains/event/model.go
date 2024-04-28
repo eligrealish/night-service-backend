@@ -4,7 +4,8 @@ import "time"
 
 type List struct {
 	Location string  `json:"location" bson:"location"`
-	Events   []Event `json:"events" bson:"events"`
+	DateOf   string  `json:"dateOf" bson:"location"`
+	Events   []Event `json:"events,omitempty" bson:"events"` // JSON field is optional
 }
 type Event struct {
 	ID          string    `json:"id" bson:"_id,omitempty"`

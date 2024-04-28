@@ -2,7 +2,6 @@ package event
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -41,14 +40,13 @@ func (e EventService) GetEventParams(context *gin.Context) List {
 		return List{}
 	}
 	log.Println("dates not passed")
-	GetEventByLocation(location)
-	return List{}
+	return GetEventByLocation(location)
 }
 
 // numbered in terms of dificuitly
 // review impl here https://chat.openai.com/c/b06a5b18-13f7-4eb8-b017-b9266db04ac3
 // todo retrives from mongo when the date is today 1
-func GetEventByLocation(location string) {
+func GetEventByLocation(location string) List {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	collection := client.Database("Night_Service").Collection("Event")
@@ -68,25 +66,37 @@ func GetEventByLocation(location string) {
 		resultDate = now
 	}
 
-	filter := bson.D{{"dateOf", bson.D{{"eq", resultDate}}}}
-	cursor, err := collection.Find(context.TODO(), filter)
+	filter := bson.D{{"dateOf", resultDate.Format("2006-01-02")}}
+	log.Printf("filter : %s", filter)
+	cursor, err := collection.Find(context.Background(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer cursor.Close(context.TODO())
-
-	// Iterate through the cursor
-	var events []Event
-	for cursor.Next(context.TODO()) {
+	var eventsPtr []*Event
+	for cursor.Next(context.Background()) {
 		var event Event
-		if err := cursor.Decode(event); err != nil {
-			log.Fatal(err)
+		err := cursor.Decode(&event)
+		if err != nil {
+			log.Println(err)
+
 		}
-		events = append(events, event)
+		eventsPtr = append(eventsPtr, &event)
+		log.Println(event)
 	}
-	log.Println(events)
-	// Print the result
-	fmt.Println("Resulting Date:", resultDate.Format("2006-01-02"))
+	log.Println(eventsPtr)
+	var list List
+	events := make([]Event, 0, len(eventsPtr))
+	// Convert []*Event to []Event
+	for _, e := range eventsPtr {
+		if e != nil {
+			events = append(events, *e) // Dereference the pointer and append the struct
+		}
+	}
+	list.Events = events
+	list.Location = location
+	list.DateOf = resultDate.Format("2006-01-02")
+	log.Println(list)
+	return list
 }
 
 // todo reterives from mongo via specific dates and location 2
