@@ -38,5 +38,14 @@ func (f EventEndpoint) GetEventWithParams(context *gin.Context) {
 
 // the gin context is passed implictly when the router is registered
 func (f EventEndpoint) GetEventByID(context *gin.Context) {
-	context.JSON(http.StatusOK, eventService.GetEventByID(context))
+	event, err := eventService.GetEventByID(context)
+	log.Println(err)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"error":   true,
+			"message": "Internal Server Error",
+		})
+	} else {
+		context.JSON(http.StatusOK, event)
+	}
 }

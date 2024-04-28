@@ -139,10 +139,33 @@ func GetEventByDBQuery(filter bson.D, countryCode string, city string) (List, er
 	return list, nil
 }
 
-// todo reterives from mongo via ID 3
-func (e EventService) GetEventByID(context *gin.Context) Event {
-	id := context.Param("id")
-	log.Println(id)
-	return Event{}
+func (e EventService) GetEventByID(ginContext *gin.Context) (Event, error) {
+	id := ginContext.Param("id")
 
+	filter := bson.E{Key: "_id", Value: bson.E{"$oid", id}}
+
+	log.Println(id)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	collection := client.Database("Night_Service").Collection("Event")
+
+	log.Printf("filter : %s", filter)
+	cursor, err := collection.Find(context.Background(), filter)
+	if err != nil {
+		log.Println("no database response")
+		return Event{}, errors.New("no database response")
+	}
+
+	for cursor.Next(context.Background()) {
+		var event Event
+		err := cursor.Decode(&event)
+		if err != nil {
+			return Event{}, err
+
+		}
+		return event, nil
+
+	}
+
+	return Event{}, errors.New("no events found matching the filter")
 }
