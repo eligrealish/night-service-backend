@@ -115,10 +115,8 @@ func GetEventByDBQuery(filter bson.D, countryCode string, city string) List {
 	events := make([]Event, 0, len(eventsPtr))
 	// Convert []*Event to []Event
 	for _, e := range eventsPtr {
-		log.Println("PRINTING")
 		if e != nil {
 			events = append(events, *e) // Dereference the pointer and append the struct
-			print(e)
 		}
 	}
 	list.Events = events
