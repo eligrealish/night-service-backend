@@ -26,7 +26,8 @@ func NewEventService() *EventService {
 
 func (e EventService) GetEventParams(context *gin.Context) List {
 	log.Println("Event Handler")
-	location, err := context.GetQuery("location")
+	country, err := context.GetQuery("country")
+	city, err := context.GetQuery("city")
 	if err {
 		log.Println(err)
 		// should write 500 here
@@ -35,18 +36,19 @@ func (e EventService) GetEventParams(context *gin.Context) List {
 	if requestUtils.CheckRequestKeyPresent(context, "startDate") && requestUtils.CheckRequestKeyPresent(context, "endDate") {
 		startDate, _ := context.GetQuery("startDate")
 		endDate, _ := context.GetQuery("endDate")
-		GetEventByLocationAndDate(startDate, endDate, location)
+		GetEventByLocationAndDate(startDate, endDate, country, city)
 		log.Println("dates passed")
 		return List{}
 	}
 	log.Println("dates not passed")
-	return GetEventByLocation(location)
+	return GetEventByLocation(country, city)
 }
 
 // numbered in terms of dificuitly
 // review impl here https://chat.openai.com/c/b06a5b18-13f7-4eb8-b017-b9266db04ac3
 // todo retrives from mongo when the date is today 1
-func GetEventByLocation(location string) List {
+func GetEventByLocation(country string, city string) List {
+
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	collection := client.Database("Night_Service").Collection("Event")
@@ -66,7 +68,10 @@ func GetEventByLocation(location string) List {
 		resultDate = now
 	}
 
-	filter := bson.D{{"dateOf", resultDate.Format("2006-01-02")}}
+	filter := bson.D{{"dateOf", resultDate.Format("2006-01-02")},
+		{"country", country},
+		{"city", city},
+	}
 	log.Printf("filter : %s", filter)
 	cursor, err := collection.Find(context.Background(), filter)
 	if err != nil {
@@ -93,14 +98,15 @@ func GetEventByLocation(location string) List {
 		}
 	}
 	list.Events = events
-	list.Location = location
+	list.Country = country
+	list.City = city
 	list.DateOf = resultDate.Format("2006-01-02")
 	log.Println(list)
 	return list
 }
 
 // todo reterives from mongo via specific dates and location 2
-func GetEventByLocationAndDate(startDate string, endDate string, location string) {
+func GetEventByLocationAndDate(startDate string, endDate string, country string, city string) {
 
 }
 
