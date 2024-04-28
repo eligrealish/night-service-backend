@@ -5,8 +5,8 @@ import "time"
 type List struct {
 	CountryCode string  `json:"countryCode" bson:"countryCode"`
 	City        string  `json:"city" bson:"city"`
-	DateOf      string  `json:"dateOf" bson:"location"`
-	Events      []Event `json:"events,omitempty" bson:"events"` // JSON field is optional
+	DateOf      string  `json:"dateOf,omitempty" bson:"location"` // JSON field is optional
+	Events      []Event `json:"events" bson:"events"`
 }
 type Event struct {
 	ID          string    `json:"id" bson:"_id,omitempty"`
