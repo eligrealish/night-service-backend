@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -119,7 +120,6 @@ func GetEventByDBQuery(filter bson.D, countryCode string, city string) (List, er
 	// Check if no events were found
 	// is suitable to do here as the cursor logic will skip so expense increase is relatively minimal
 	if len(eventsPtr) == 0 {
-		log.Println("No events found matching the filter")
 		return List{}, errors.New("no events found matching the filter")
 	}
 
@@ -142,7 +142,13 @@ func GetEventByDBQuery(filter bson.D, countryCode string, city string) (List, er
 func (e EventService) GetEventByID(ginContext *gin.Context) (Event, error) {
 	id := ginContext.Param("id")
 
-	filter := bson.E{Key: "_id", Value: bson.E{"$oid", id}}
+	// Convert the string ID to an ObjectId
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return Event{}, errors.New("invalid id")
+	}
+
+	filter := bson.D{{Key: "_id", Value: objID}}
 
 	log.Println(id)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -150,22 +156,18 @@ func (e EventService) GetEventByID(ginContext *gin.Context) (Event, error) {
 	collection := client.Database("Night_Service").Collection("Event")
 
 	log.Printf("filter : %s", filter)
-	cursor, err := collection.Find(context.Background(), filter)
+
+	var event Event
+
+	err = collection.FindOne(context.Background(), filter).Decode(&event)
+	log.Printf("event  : %s", event)
 	if err != nil {
-		log.Println("no database response")
 		return Event{}, errors.New("no database response")
 	}
 
-	for cursor.Next(context.Background()) {
-		var event Event
-		err := cursor.Decode(&event)
-		if err != nil {
-			return Event{}, err
-
-		}
-		return event, nil
-
+	if err = client.Disconnect(ctx); err != nil {
+		panic(err)
 	}
 
-	return Event{}, errors.New("no events found matching the filter")
+	return event, nil
 }
