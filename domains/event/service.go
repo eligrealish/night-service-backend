@@ -99,7 +99,7 @@ func GetEventByDBQuery(filter bson.D, countryCode string, city string) (List, er
 
 	log.Printf("filter : %s", filter)
 	cursor, err := collection.Find(context.Background(), filter)
-	if err != nil || !cursor.Next(context.TODO()) {
+	if err != nil {
 		log.Println("no database response")
 		return List{}, errors.New("no database response")
 	}
@@ -115,7 +115,14 @@ func GetEventByDBQuery(filter bson.D, countryCode string, city string) (List, er
 		eventsPtr = append(eventsPtr, &event)
 		log.Println("event : %s", event)
 	}
-	log.Println(eventsPtr)
+
+	// Check if no events were found
+	// is suitable to do here as the cursor logic will skip so expense increase is relatively minimal
+	if len(eventsPtr) == 0 {
+		log.Println("No events found matching the filter")
+		return List{}, errors.New("no events found matching the filter")
+	}
+
 	var list List
 	events := make([]Event, 0, len(eventsPtr))
 	// Convert []*Event to []Event
