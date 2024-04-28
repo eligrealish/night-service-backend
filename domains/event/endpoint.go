@@ -20,8 +20,6 @@ func NewEventEndpoint() *EventEndpoint {
 	return eventEndpoint
 }
 
-// todo add error chcek, if given behaviour happens then error is returned and 500 is logged
-// todo the err for 500 this will need to be considered with in all the services
 // the gin context is passed implictly when the router is registered
 func (f EventEndpoint) GetEventWithParams(context *gin.Context) {
 	list, err := eventService.GetEventParams(context)
