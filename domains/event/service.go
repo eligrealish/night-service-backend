@@ -39,25 +39,17 @@ func (e EventService) GetEventParams(context *gin.Context) List {
 	}
 	// Parse query string parameters
 	if requestUtils.CheckRequestKeyPresent(context, "startDate") && requestUtils.CheckRequestKeyPresent(context, "endDate") {
+		log.Println("dates passed")
+
 		startDate, _ := context.GetQuery("startDate")
 		endDate, _ := context.GetQuery("endDate")
-		GetEventByLocationAndDate(startDate, endDate, countryCode, city)
-		log.Println("dates passed")
-		return List{}
+		return GetEventByLocationAndDate(startDate, endDate, countryCode, city)
 	}
 	log.Println("dates not passed")
 	return GetEventByLocation(countryCode, city)
 }
 
-// numbered in terms of dificuitly
-// review impl here https://chat.openai.com/c/b06a5b18-13f7-4eb8-b017-b9266db04ac3
-// todo retrives from mongo when the date is today 1
 func GetEventByLocation(countryCode string, city string) List {
-
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
-	collection := client.Database("Night_Service").Collection("Event")
-
 	// Get the current time
 	now := time.Now()
 
@@ -77,6 +69,31 @@ func GetEventByLocation(countryCode string, city string) List {
 		{"countryCode", countryCode},
 		{"city", city},
 	}
+
+	list := GetEventByDBQuery(filter, countryCode, city)
+	list.DateOf = resultDate.Format("2006-01-02")
+
+	return list
+}
+
+func GetEventByLocationAndDate(startDate string, endDate string, countryCode string, city string) List {
+	filter := bson.D{
+		{"dateOf", bson.D{
+			{"$gte", startDate},
+			{"$lte", endDate},
+		}},
+		{"countryCode", countryCode},
+		{"city", city},
+	}
+	return GetEventByDBQuery(filter, countryCode, city)
+}
+
+func GetEventByDBQuery(filter bson.D, countryCode string, city string) List {
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	collection := client.Database("Night_Service").Collection("Event")
+
 	log.Printf("filter : %s", filter)
 	cursor, err := collection.Find(context.Background(), filter)
 	if err != nil {
@@ -98,21 +115,18 @@ func GetEventByLocation(countryCode string, city string) List {
 	events := make([]Event, 0, len(eventsPtr))
 	// Convert []*Event to []Event
 	for _, e := range eventsPtr {
+		log.Println("PRINTING")
 		if e != nil {
 			events = append(events, *e) // Dereference the pointer and append the struct
+			print(e)
 		}
 	}
 	list.Events = events
 	list.CountryCode = countryCode
 	list.City = city
-	list.DateOf = resultDate.Format("2006-01-02")
+
 	log.Println(list)
 	return list
-}
-
-// todo reterives from mongo via specific dates and location 2
-func GetEventByLocationAndDate(startDate string, endDate string, countryCode string, city string) {
-
 }
 
 // todo reterives from mongo via ID 3
