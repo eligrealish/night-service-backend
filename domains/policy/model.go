@@ -31,4 +31,5 @@ type Message struct {
 		ContactInformation string `json:"ContactInformation" bson:"ContactInformation"`
 		LastUpdated        string `json:"LastUpdated" bson:"LastUpdated"`
 	} `json:"PrivacyNotice" bson:"PrivacyNotice"`
+	PolicyPassed bool `json:"PolicyPassed" bson:"PolicyPassed"`
 }

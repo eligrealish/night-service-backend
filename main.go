@@ -19,6 +19,7 @@ func main() {
 	// TODO review if error should be moved to model or utils
 	// TODO review if if else for 500 or 200 should be moved to utils
 	// TODO review logging can be improved
+	// TODO mongodb has dates?!?!?
 
 	// Initialize Router
 	routes.Initialize()
