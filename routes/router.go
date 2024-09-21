@@ -8,8 +8,8 @@ import (
 func Initialize() {
 	router := gin.Default()
 
-	middleware := Middleware{}
-	router.Use(middleware.CheckPolicyAccepted())
+	//middleware := Middleware{}
+	//router.Use(middleware.CheckPolicyAccepted())
 	initializeRoutes(router)
 
 	err := router.Run()
