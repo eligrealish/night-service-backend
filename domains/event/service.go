@@ -139,13 +139,13 @@ func GetEventByDBQuery(filter bson.D, countryCode string, city string) (List, er
 	return list, nil
 }
 
-func (e EventService) GetEventByID(ginContext *gin.Context) (Event, error) {
+func (e EventService) GetEventByID(ginContext *gin.Context) (List, error) {
 	id := ginContext.Param("id")
 
 	// Convert the string ID to an ObjectId
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return Event{}, errors.New("invalid id")
+		return List{}, errors.New("invalid id")
 	}
 
 	filter := bson.D{{Key: "_id", Value: objID}}
@@ -162,12 +162,20 @@ func (e EventService) GetEventByID(ginContext *gin.Context) (Event, error) {
 	err = collection.FindOne(context.Background(), filter).Decode(&event)
 	log.Printf("event  : %s", event)
 	if err != nil {
-		return Event{}, errors.New("no database response")
+		return List{}, errors.New("no database response")
 	}
 
 	if err = client.Disconnect(ctx); err != nil {
 		panic(err)
 	}
 
-	return event, nil
+	var list List
+	var events []Event
+	list.DateOf = event.DateOf
+	list.City = event.City
+	list.CountryCode = event.CountryCode
+	events = append(events, event)
+	list.Events = events
+
+	return list, nil
 }
