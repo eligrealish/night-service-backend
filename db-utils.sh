@@ -5,7 +5,7 @@ operation=$1
 # Database name
 dbname="Night_Service"
 # Backup directory
-backup_dir="/recycle"
+backup_dir="~/recycle"
 # Current datetime
 datetime=$(date '+%Y%m%d-%H%M%S')
 # File type
