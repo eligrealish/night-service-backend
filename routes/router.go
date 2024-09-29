@@ -8,8 +8,9 @@ import (
 func Initialize() {
 	router := gin.Default()
 
-	//middleware := Middleware{}
+	middleware := Middleware{}
 	//router.Use(middleware.CheckPolicyAccepted())
+	router.Use(middleware.CORSMiddleware())
 	initializeRoutes(router)
 
 	err := router.Run()
