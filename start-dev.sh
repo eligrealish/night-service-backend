@@ -1,3 +1,3 @@
 #!/bin/bash
-sudo systemctl start mongod
+brew services start mongodb-community
 go run .
